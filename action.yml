@@ -1,0 +1,39 @@
+name: JReleaser
+
+description: 'Release Java projects quickly and easily with JReleaser'
+
+branding:
+  icon: 'archive'
+  color: 'gray-dark'
+
+inputs:
+
+  tag:
+    description: 'The GitHub releases tag that points to JReleaser''s executable JAR file.'
+    default: 'early-access'
+    required: true
+
+  jar:
+    description: 'The name of the executable JAR file to download and execute.'
+    default: 'jreleaser-tool-provider-0.1.0-SNAPSHOT.jar'
+    required: true
+
+  arguments:
+    description: 'The arguments to be passed to JReleaser.'
+    default: 'full-release'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Initialize JReleaser'
+      shell: bash
+      run: |
+        echo "Initialize JReleaser"
+        wget https://github.com/jreleaser/jreleaser/releases/download/${{ inputs.tag }}/${{ inputs.jar }}
+        echo "::endgroup::"
+    - name: 'Launch JReleaser'
+      shell: bash
+      run: |
+        echo "java -jar ${{ inputs.jar }} ${{ inputs.arguments }}"
+        java -jar ${{ inputs.jar }} ${{ inputs.arguments }}
