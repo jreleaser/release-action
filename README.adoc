@@ -71,11 +71,11 @@ to be located at the root of the repository.
 
 Following inputs can be used as `step.with` keys
 
-[%header]
+[%header,width="100%"]
 |===
 | Name      | Type   | Default      | Description
-| version   | String | early-access | The JReleaser version to use. Should match any of the
-link:https://github.com/jreleaser/jreleaser/releases[published releases].
+| version   | String | early-access | The JReleaser version to use. +
+Should match any of the link:https://github.com/jreleaser/jreleaser/releases[published releases].
 | arguments | String | full-release | The JReleaser command to run.
 |===
 
@@ -83,7 +83,7 @@ link:https://github.com/jreleaser/jreleaser/releases[published releases].
 
 Following environment variables can be used as `step.env` keys
 
-[%header]
+[%header,width="100%"]
 |===
 | Name                   | Description
 | JRELEASER_GITHUB_TOKEN | link:https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token[GITHUB_TOKEN]
@@ -120,6 +120,7 @@ you may apply the `GH_PAT` token as follows
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 ----
 
-Additional environment variables may be needed depending on your specific setup. Review the docs at
-link:https://jreleaser.org[].
+Additional environment variables may be needed depending on your specific setup, such as those needed for signing files
+with GPG or announcing a release via Twitter. Review the docs at link:https://jreleaser.org[] to find more about these
+variables and how to set them up.
 
