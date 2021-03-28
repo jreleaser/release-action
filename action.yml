@@ -24,7 +24,7 @@ runs:
     - name: 'Download JReleaser'
       shell: bash
       run: |
-        echo "::group::Download JReleaser"
+        echo "::group::📦 Download JReleaser"
         JAR="jreleaser-tool-provider-${{ inputs.version }}.jar"
         URL="https://github.com/jreleaser/jreleaser/releases/download/${{ inputs.version }}/$JAR"
         java "${{ github.action_path }}/copy.java" $URL $JAR
@@ -34,5 +34,5 @@ runs:
       shell: bash
       run: |
         JAR="jreleaser-tool-provider-${{ inputs.version }}.jar"
-        echo "java -jar $JAR ${{ inputs.arguments }}"
+        echo "☕ java -jar $JAR ${{ inputs.arguments }}"
         java -jar $JAR ${{ inputs.arguments }}
