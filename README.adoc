@@ -4,8 +4,8 @@
 :project-name:  release-action
 
 image:https://github.com/{project-owner}/{project-name}/workflows/Test/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
-image:https://img.shields.io/github/v/release/{project-owner}/{project-name}[GitHub release]
-image:https://img.shields.io/twitter/follow/{project-owner}?style=social[Twitter Follow]
+image:https://img.shields.io/github/v/release/{project-owner}/{project-name}["GitHub release"", link="https://github.com/jreleaser/release-action/releasestw"]
+image:https://img.shields.io/twitter/follow/{project-owner}?style=social["Twitter Follow", link="https://twitter.com/jreleaser"]
 
 This action executes a link:https://jreleaser.org[JReleaser] workflow.
 
