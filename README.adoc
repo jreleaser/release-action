@@ -54,6 +54,11 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           mvn -B --file pom.xml release:prepare release:perform
 
+      - name: Setup Java
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 11
+
       # Create a release
 
       - name: Run JReleaser
@@ -64,6 +69,8 @@ jobs:
 
 The last step executes a `full-release` with the default `jreleaser.yml` configuration that's expected
 to be located at the root of the repository.
+
+WARNING: This action requires Java 11+ to download and execute JReleaser.
 
 == Customizing
 
