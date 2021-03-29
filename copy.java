@@ -2,7 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 class copy {
@@ -16,7 +16,7 @@ class copy {
 
     var version = args[0];
     var url = "https://github.com/jreleaser/jreleaser/releases/download/" + version + "/jreleaser-tool-provider-" + version + ".jar";
-    var file = Paths.get("jreleaser-cli.jar");
+    var file = Path.of("jreleaser-cli.jar");
 
     try (var stream = new URL(url).openStream()) {
       System.out.printf("✅ Located JReleaser %s%n", version);
