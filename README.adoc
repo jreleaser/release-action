@@ -1,7 +1,7 @@
 = JReleaser
 :linkattrs:
-:project-owner:   jreleaser
-:project-name:    github-action
+:project-owner: jreleaser
+:project-name:  release-action
 
 image:https://github.com/{project-owner}/{project-name}/workflows/Test/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
 image:https://img.shields.io/github/v/release/{project-owner}/{project-name}[GitHub release]
@@ -54,7 +54,9 @@ jobs:
           git config user.email "${{ github.event.head_commit.committer.email }}"
           mvn -B --file pom.xml release:prepare release:perform
 
-      - name: Setup Java
+      # IMPORTANT!
+
+      - name: Setup Java for JReleaser
         uses: actions/setup-java@v1.4.3
         with:
           java-version: 11
@@ -62,7 +64,7 @@ jobs:
       # Create a release
 
       - name: Run JReleaser
-        uses: jreleaser/github-action@v1
+        uses: jreleaser/release-action@v1
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ----
@@ -70,7 +72,8 @@ jobs:
 The last step executes a `full-release` with the default `jreleaser.yml` configuration that's expected
 to be located at the root of the repository.
 
-WARNING: This action requires Java 11+ to download and execute JReleaser.
+WARNING: This action requires Java 11+ to download and execute JReleaser. If your project already builds with Java 11+
+then you can skip the second "setup" step.
 
 == Customizing
 
@@ -110,7 +113,7 @@ If you create a secret named `GH_PAT`, the step will look like this
 [source,yaml]
 ----
       - name: Run JReleaser
-        uses: jreleaser/github-action@v1
+        uses: jreleaser/release-action@v1
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 ----
@@ -121,7 +124,7 @@ you may apply the `GH_PAT` token as follows
 [source,yaml]
 ----
       - name: Run JReleaser
-        uses: jreleaser/github-action@v1
+        uses: jreleaser/release-action@v1
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           JRELEASER_HOMEBREW_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
