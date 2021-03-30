@@ -87,6 +87,9 @@ Following inputs can be used as `step.with` keys
 | version   | String | early-access | The JReleaser version to use. +
 Should match any of the link:https://github.com/jreleaser/jreleaser/releases[published releases].
 | arguments | String | full-release | The JReleaser command to run.
+| working-directory | String | ${{ github.workspace }} | The directory to change into. +
+Defaults to the directory the calling workflow runs in.
+| 
 |===
 
 == Environment Variables
