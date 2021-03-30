@@ -18,11 +18,17 @@ inputs:
     default: 'full-release'
     required: true
 
+  working-directory:
+    required: true
+    default: ${{ github.workspace }}
+    description: 'The directory to change into.'
+
 runs:
   using: 'composite'
   steps:
     - name: 'Download JReleaser'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "::group::📦 Download JReleaser"
         java "${{ github.action_path }}/copy.java" ${{ inputs.version }}
@@ -31,6 +37,7 @@ runs:
 
     - name: 'Execute JReleaser'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: |
         echo "☕ java -jar jreleaser-cli.jar ${{ inputs.arguments }}"
         java -jar jreleaser-cli.jar ${{ inputs.arguments }}
