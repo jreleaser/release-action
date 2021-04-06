@@ -31,7 +31,7 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "::group::📦 Download JReleaser"
-        java "${{ github.action_path }}/copy.java" ${{ inputs.version }}
+        java "${{ github.action_path }}/get_jreleaser.java" ${{ inputs.version }}
         java -jar jreleaser-cli.jar --version
         echo "::endgroup::"
 

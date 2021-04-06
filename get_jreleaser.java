@@ -5,10 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-class copy {
+class get_jreleaser {
   public static void main(String... args) throws Exception {
     if (args.length != 1) {
-      System.err.println("Usage: java copy.java VERSION");
+      System.err.println("Usage: java get_jreleaser.java VERSION");
       System.exit(1);
     }
 
@@ -25,12 +25,12 @@ class copy {
       System.out.printf("%s << copied %d bytes%n", file, size);
       System.out.printf("✅ JReleaser installed successfully%n");
     } catch(FileNotFoundException e) {
-        System.out.printf("❌ JReleaser %s not found%n", version);
-        System.exit(1);
+      System.out.printf("❌ JReleaser %s not found%n", version);
+      System.exit(1);
     } catch(IOException e) {
-        System.out.printf("☠️  JReleaser %s could not be downloaded/copied%n", version);
-        e.printStackTrace();
-        System.exit(1);
+      System.out.printf("☠️  JReleaser %s could not be downloaded/copied%n", version);
+      e.printStackTrace();
+      System.exit(1);
     }
   }
 }
