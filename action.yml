@@ -10,7 +10,7 @@ inputs:
 
   version:
     description: 'The version of JReleaser to download and execute.'
-    default: 'early-access'
+    default: 'latest'
     required: true
 
   arguments:
