@@ -48,7 +48,8 @@ class get_jreleaser {
         }
 
         // setup the actual download
-        var url = "https://github.com/jreleaser/jreleaser/releases/download/" + version + "/jreleaser-tool-provider-" + version + ".jar";
+        var tag = !"early-access".equals(version) ? "v" + version : version;
+        var url = "https://github.com/jreleaser/jreleaser/releases/download/" + tag + "/jreleaser-tool-provider-" + version + ".jar";
         var file = Path.of("jreleaser-cli.jar");
 
         try (var stream = new URL(url).openStream()) {
