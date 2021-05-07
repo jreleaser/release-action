@@ -90,7 +90,9 @@ Following inputs can be used as `step.with` keys
 |===
 | Name              | Type   | Default                 | Description
 | version           | String | latest                  | The JReleaser version to use. +
-Should match any of the link:https://github.com/jreleaser/jreleaser/releases[published releases].
+Should match any of the link:https://github.com/jreleaser/jreleaser/releases[published releases]. +
+You may use `latest` to pull the latest stable release or +
+`early-access` to pull the latest snapshot.
 | arguments         | String | full-release            | The JReleaser command to run.
 | working-directory | String | ${{ github.workspace }} | The directory to change into. +
 Defaults to the directory the calling workflow runs in.
@@ -110,7 +112,7 @@ as provided by `secrets`
 == Caution
 
 The default `GITHUB_TOKEN` from `secrets` is link:https://help.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token#about-the-github_token-secret[limited]
-to the repository that contains your worklow.
+to the repository that contains your workflow.
 
 Pushing to other repositories such as Homebrew tap requires additional permissions, you must create a custom
 link:https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/[Personal Access Token] with
