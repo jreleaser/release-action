@@ -29,7 +29,7 @@ class get_jreleaser {
         // resolve latest to a tagged release
         if ("latest".equalsIgnoreCase(version)) {
             var url = "https://jreleaser.org/releases/latest/download/VERSION";
-            var file = Path.of("VERSION");
+            var file = Path.of("JRELEASER_VERSION");
 
             try (var stream = new URL(url).openStream()) {
                 System.out.printf("✅ Located version marker%n");
