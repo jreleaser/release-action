@@ -23,9 +23,21 @@ inputs:
     default: ${{ github.workspace }}
     description: 'The directory to change into.'
 
+  setup-java:
+    required: false
+    default: 'true'
+    description: 'Setup internal Java runtime.'
+
 runs:
   using: 'composite'
   steps:
+    - name: 'Setup Java'
+      uses: actions/setup-java@v2
+      if: ${{ inputs.setup-java }} == 'true'
+      with:
+        java-version: 17
+        distribution: 'zulu'
+
     - name: 'Download JReleaser'
       shell: bash
       working-directory: ${{ inputs.working-directory }}
