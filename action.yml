@@ -12,11 +12,6 @@ inputs:
     default: 'latest'
     required: true
 
-  shell:
-    description: 'The shell used to run JReleaser.'
-    default: 'bash'
-    required: false
-
   arguments:
     description: 'The command-line arguments to be passed to JReleaser.'
     default: 'full-release'

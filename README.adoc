@@ -99,9 +99,6 @@ Following inputs can be used as `step.with` keys
 Should match any of the link:https://github.com/jreleaser/jreleaser/releases[published releases]. +
 You may use `latest` to pull the latest stable release or +
 `early-access` to pull the latest snapshot.
-| shell             | String  | bash                    | The shell used to run JReleaser. +
-Refer to the link:https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell[official docs]
-to learn more about the different shell types.
 | arguments         | String  | full-release            | The JReleaser command to run.
 | working-directory | String  | ${{ github.workspace }} | The directory to change into. +
 Defaults to the directory the calling workflow runs in.
