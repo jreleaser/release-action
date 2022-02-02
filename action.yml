@@ -52,7 +52,7 @@ runs:
         echo "::endgroup::"
 
     - name: 'Execute JReleaser'
-      shell: ${{ inputs.shell }}
+      shell: pwsh
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "☕ java -jar jreleaser-cli.jar ${{ inputs.arguments }}"
