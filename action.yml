@@ -7,11 +7,15 @@ branding:
   color: 'gray-dark'
 
 inputs:
-
   version:
     description: 'The version of JReleaser to download and execute.'
     default: 'latest'
     required: true
+
+  shell:
+    description: 'The shell used to run JReleaser.'
+    default: 'bash'
+    required: false
 
   arguments:
     description: 'The command-line arguments to be passed to JReleaser.'
@@ -24,16 +28,16 @@ inputs:
     description: 'The directory to change into.'
 
   setup-java:
-    required: false
     default: 'true'
     description: 'Setup internal Java runtime.'
+    required: false
 
 runs:
   using: 'composite'
   steps:
     - name: 'Setup Java'
       uses: actions/setup-java@v2
-      if: ${{ inputs.setup-java }} == 'true'
+      if: ${{ inputs.setup-java }} == 'true' || ${{ inputs.setup-java }} == true
       with:
         java-version: 17
         distribution: 'zulu'
@@ -48,7 +52,7 @@ runs:
         echo "::endgroup::"
 
     - name: 'Execute JReleaser'
-      shell: bash
+      shell: ${{ inputs.shell }}
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "☕ java -jar jreleaser-cli.jar ${{ inputs.arguments }}"
