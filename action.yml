@@ -32,7 +32,7 @@ runs:
   steps:
     - name: 'Setup Java'
       uses: actions/setup-java@v2
-      if: ${{ inputs.setup-java }} == 'true' || ${{ inputs.setup-java }} == true
+      if: ${{ inputs.setup-java }} == 'true'
       with:
         java-version: 17
         distribution: 'zulu'
