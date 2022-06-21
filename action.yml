@@ -27,6 +27,11 @@ inputs:
     description: 'Setup internal Java runtime.'
     required: false
 
+  java-opts:
+    default: ''
+    description: 'Additional JVM parameters'
+    required: false
+
 runs:
   using: 'composite'
   steps:
@@ -51,4 +56,4 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       run: |
         echo "☕ java -jar jreleaser-cli.jar ${{ inputs.arguments }}"
-        java -jar jreleaser-cli.jar ${{ inputs.arguments }}
+        java ${{ inputs.java-opts }} -jar jreleaser-cli.jar ${{ inputs.arguments }}
