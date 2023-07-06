@@ -153,3 +153,39 @@ Additional environment variables may be needed depending on your specific setup,
 with GPG or announcing a release via Twitter. Review the docs at link:https://jreleaser.org[] to find more about these
 variables and how to set them up.
 
+=== SLSA Builder
+
+A custom link:https://github.com/slsa-framework/[SLSA builder] is available for Java projects built with either Maven or
+Gradle. The following snippet shows the minimum configuration to run the builder on GitHub Actions.
+
+[source,yaml]
+----
+  release:
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.0.0-java
+    with:
+      project-version: ${{ needs.precheck.outputs.VERSION }}
+      rekor-log-public: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+----
+
+It's expected that the JReleaser configuration defines build instructions using the `hooks` feature, such as
+
+[source,yaml]
+.jreleaser.yaml
+----
+hooks:
+  script:
+    before:
+      - run: './mvnw -ntp verify'
+        condition: '"{{ Env.CI }}" == true'
+        verbose: true
+        filter:
+          includes: ['assemble']
+----
+
