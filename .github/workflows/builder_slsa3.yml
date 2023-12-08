@@ -127,7 +127,7 @@ jobs:
         with:
           arguments: |
             release --auto-config --update --skip-tag --branch ${{ inputs.branch }} --tag-name ${{ env.JRELEASER_TAG_NAME }} \
-            --update-section=ASSETS --skip-checksums --file slsa/${{ needs.slsa-run.outputs.attestations-download-name }}/*-attestation.intoto.sigstore
+            --update-section=ASSETS --skip-checksums --file slsa/${{ needs.slsa-run.outputs.attestations-download-name }}/*-attestation.intoto.build.slsa
         env:
           JRELEASER_PROJECT_VERSION: ${{ inputs.project-version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.github-token }}
