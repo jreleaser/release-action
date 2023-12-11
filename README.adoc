@@ -166,7 +166,7 @@ Gradle. The following snippet shows the minimum configuration to run the builder
       id-token: write
       actions: read
       packages: write
-    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.0.0-java
+    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.1.0-java
     with:
       project-version: ${{ needs.precheck.outputs.VERSION }}
       rekor-log-public: true
