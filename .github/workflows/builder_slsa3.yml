@@ -99,7 +99,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v 3.5.3
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v 4.1.1
         with:
           fetch-depth: 0
           ref: ${{ inputs.branch }}
@@ -112,7 +112,7 @@ jobs:
           sha256: ${{ needs.slsa-run.outputs.attestations-download-sha256 }}
 
       - name: Download JReleaser output
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v 3.0.2
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v 4.1.1
         with:
           name: jreleaser-release
           path: jreleaser-release
@@ -123,7 +123,7 @@ jobs:
           echo "JRELEASER_TAG_NAME=$(grep tagName jreleaser-release/output.properties | awk -F= '{print $2}')" >> $GITHUB_ENV
 
       - name: Release provenance
-        uses: jreleaser/release-action@d62273ed7005724d7ef99ef9e9b25ba19efdce1d # v 2.4.1
+        uses: jreleaser/release-action@f69e545b05f149483cecb2fb81866247992694b8 # v 2.4.2
         with:
           arguments: |
             release --auto-config --update --skip-tag --branch ${{ inputs.branch }} --tag-name ${{ env.JRELEASER_TAG_NAME }} \
