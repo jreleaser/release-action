@@ -1,7 +1,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright 2020-2023 The JReleaser authors.
+# Copyright 2020-2024 The JReleaser authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ jobs:
     steps:
       - name: Generate the token
         id: generate
-        uses: slsa-framework/slsa-github-generator/actions/delegator/setup-generic@v1.9.0
+        uses: slsa-framework/slsa-github-generator/actions/delegator/setup-generic@v2.0.0
         with:
           slsa-workflow-recipient: 'delegator_generic_slsa3.yml'
           slsa-rekor-log-public: ${{ inputs.rekor-log-public }}
@@ -88,7 +88,7 @@ jobs:
       contents: write # For asset uploads.
       actions: read   # For the entrypoint.
       packages: write
-    uses: slsa-framework/slsa-github-generator/.github/workflows/delegator_generic_slsa3.yml@v1.9.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/delegator_generic_slsa3.yml@v2.0.0
     with:
       slsa-token: ${{ needs.slsa-setup.outputs.slsa-token }}
     secrets:
@@ -99,20 +99,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v 4.1.1
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v 4.1.4
         with:
           fetch-depth: 0
           ref: ${{ inputs.branch }}
 
       - name: Download provenance
-        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v1.9.0
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v2.0.0
         with:
           name: ${{ needs.slsa-run.outputs.attestations-download-name }}
           path: slsa
           sha256: ${{ needs.slsa-run.outputs.attestations-download-sha256 }}
 
       - name: Download JReleaser output
-        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v 4.1.1
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v 4.1.4
         with:
           name: jreleaser-release
           path: jreleaser-release
