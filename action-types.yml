@@ -1,0 +1,14 @@
+inputs:
+  version:
+    type: string
+  arguments:
+    type: string
+  working-directory:
+    type: string
+  setup-java:
+    type: boolean
+  java-opts:
+    type: list
+    separator: " "
+    list-item:
+      type: string
