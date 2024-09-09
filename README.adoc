@@ -105,7 +105,7 @@ You may use `latest` to pull the latest stable release or +
 Defaults to the directory the calling workflow runs in.
 | setup-java        | boolean | true                    | Automatically setup a Java runtime. +
 Java runtime defaults to Zulu 17.
-| java-opts         | space separated string list |                         | Additional JVM parameters for running JReleaser
+| java-opts         | String |                         | Additional JVM parameters for running JReleaser
 |===
 
 == Environment Variables

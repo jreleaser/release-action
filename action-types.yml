@@ -2,7 +2,10 @@ inputs:
   version:
     type: string
   arguments:
-    type: string
+    type: list
+    separator: " "
+    list-item:
+      type: string
   working-directory:
     type: string
   setup-java:
