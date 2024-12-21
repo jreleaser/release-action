@@ -153,3 +153,72 @@ Additional environment variables may be needed depending on your specific setup,
 with GPG or announcing a release via Twitter. Review the docs at link:https://jreleaser.org[] to find more about these
 variables and how to set them up.
 
+
+=== SLSA Builder
+
+A custom link:https://github.com/slsa-framework/[SLSA builder] is available for Go projects. The following snippet shows
+the minimum configuration to run the builder on GitHub Actions.
+
+[source,yaml]
+----
+  release:
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.0.0-go
+    with:
+      project-version: ${{ needs.precheck.outputs.VERSION }}
+      rekor-log-public: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+----
+
+It's expected that the JReleaser configuration defines build instructions using the `hooks` feature, such as
+
+[source,yaml]
+.jreleaser.yml
+----
+matrix:
+  rows:
+    - { goos: darwin,  goarch: arm64, platform: osx-aarch_64     }
+    - { goos: darwin,  goarch: amd64, platform: osx-x86_64       }
+    - { goos: linux,   goarch: arm64, platform: linux-aarch_64   }
+    - { goos: linux,   goarch: amd64, platform: linux-x86_64     }
+    - { goos: windows, goarch: arm64, platform: windows-aarch_64 }
+    - { goos: windows, goarch: amd64, platform: windows-x86_64   }
+
+hooks:
+  script:
+    before:
+      - run: |
+          echo "building ${GOOS}-${GOARCH}"
+          go build -o target/${GOOS}-${GOARCH}/ src/helloworld.go
+        applyDefaultMatrix: true
+        verbose: true
+        environment:
+          GOOS: '{{ matrix.goos }}'
+          GOARCH: '{{ matrix.goarch }}'
+        filter:
+          includes: ['assemble']
+
+assemble:
+  archive:
+    helloworld:
+      active: ALWAYS
+      formats: [ ZIP ]
+      applyDefaultMatrix: true
+      archiveName: '{{distributionName}}-{{projectVersion}}-{{ matrix.goos }}-{{ matrix.goarch }}'
+      fileSets:
+        - input: 'target/{{ matrix.goos }}-{{ matrix.goarch }}'
+          output: 'bin'
+          includes: [ 'helloworld{.exe,}' ]
+        - input: '.'
+          includes: [ 'LICENSE' ]
+
+distributions:
+  helloworld:
+    executable:
+      windowsExtension: exe
+----
