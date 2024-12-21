@@ -153,3 +153,68 @@ Additional environment variables may be needed depending on your specific setup,
 with GPG or announcing a release via Twitter. Review the docs at link:https://jreleaser.org[] to find more about these
 variables and how to set them up.
 
+=== SLSA Builder
+
+A custom link:https://github.com/slsa-framework/[SLSA builder] is available for Rust projects that rely on Zig as linker.
+The following snippet shows the minimum configuration to run the builder on GitHub Actions.
+
+[source,yaml]
+----
+  release:
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.0.0-rustzig
+    with:
+      project-version: ${{ inputs.version }}
+      rekor-log-public: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+----
+
+It's expected that the JReleaser configuration defines build instructions using the `hooks` feature, such as
+
+[source,yaml]
+.jreleaser.yml
+----
+matrix:
+  rows:
+    - { target: aarch64-apple-darwin,      platform: osx-aarch_64   }
+    - { target: x86_64-apple-darwin,       platform: osx-x86_64     }
+    - { target: aarch64-unknown-linux-gnu, platform: linux-aarch_64 }
+    - { target: x86_64-unknown-linux-gnu,  platform: linux-x86_64   }
+    - { target: x86_64-pc-windows-gnu,     platform: windows-x86_64 }
+
+hooks:
+  script:
+    before:
+      - run: |
+          rustup target add {{ matrix.target }}
+          cargo install --locked cargo-zigbuild
+          cargo zigbuild --target {{ matrix.target }}
+        applyDefaultMatrix: true
+        verbose: true
+        filter:
+          includes: ['assemble']
+
+assemble:
+  archive:
+    helloworld:
+      active: ALWAYS
+      formats: [ ZIP ]
+      applyDefaultMatrix: true
+      archiveName: '{{distributionName}}-{{projectVersion}}-{{ matrix.target }}'
+      fileSets:
+        - input: 'target/{{ matrix.target }}'
+          output: 'bin'
+          includes: [ 'helloworld{.exe,}' ]
+        - input: '.'
+          includes: [ 'LICENSE' ]
+
+distributions:
+  helloworld:
+    executable:
+      windowsExtension: exe
+----
