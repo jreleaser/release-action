@@ -1,0 +1,124 @@
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright 2020-2024 The JReleaser authors.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+name: JReleaser Zig SLSA Generator
+
+on:
+  workflow_call:
+    inputs:
+      project-version:
+        description: 'The project version'
+        required: true
+        type: string
+      branch:
+        description: 'The working branch'
+        required: false
+        default: 'main'
+        type: string
+      tag-or-ref:
+        description: 'Tag or ref to checkout'
+        required: false
+        type: string
+      zig-version:
+        description: 'Zig version'
+        required: false
+        default: latest
+        type: string
+      jreleaser-version:
+        description: 'JReleaser version'
+        required: false
+        default: latest
+        type: string
+      rekor-log-public:
+        description: 'private'
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      github-token:
+        required: true
+
+jobs:
+  slsa-setup:
+    permissions:
+      id-token: write # For token creation.
+    outputs:
+      slsa-token: ${{ steps.generate.outputs.slsa-token }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate the token
+        id: generate
+        uses: slsa-framework/slsa-github-generator/actions/delegator/setup-generic@v2.0.0
+        with:
+          slsa-workflow-recipient: 'delegator_generic_slsa3.yml'
+          slsa-rekor-log-public: ${{ inputs.rekor-log-public }}
+          slsa-runner-label: 'ubuntu-latest'
+          slsa-build-action-path: './internal/builders/zig'
+          slsa-workflow-inputs: ${{ toJson(inputs) }}
+
+  slsa-run:
+    needs: [ slsa-setup ]
+    permissions:
+      id-token: write # For signing.
+      contents: write # For asset uploads.
+      actions: read   # For the entrypoint.
+      packages: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/delegator_generic_slsa3.yml@v2.0.0
+    with:
+      slsa-token: ${{ needs.slsa-setup.outputs.slsa-token }}
+    secrets:
+      secret1: ${{ secrets.github-token }}
+
+  slsa-upload:
+    needs: [ slsa-run ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v 4.1.4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.branch }}
+
+      - name: Download provenance
+        uses: slsa-framework/slsa-github-generator/actions/nodejs/secure-attestations-download@v2.0.0
+        with:
+          name: ${{ needs.slsa-run.outputs.attestations-download-name }}
+          path: slsa
+          sha256: ${{ needs.slsa-run.outputs.attestations-download-sha256 }}
+
+      - name: Download JReleaser output
+        uses: actions/download-artifact@6b208ae046db98c579e8a3aa621ab581ff575935 # v 4.1.4
+        with:
+          name: jreleaser-release
+          path: jreleaser-release
+
+      - name: Resolve tagName
+        shell: bash
+        run: |
+          echo "JRELEASER_TAG_NAME=$(grep tagName jreleaser-release/output.properties | awk -F= '{print $2}')" >> $GITHUB_ENV
+
+      - name: Release provenance
+        uses: jreleaser/release-action@f69e545b05f149483cecb2fb81866247992694b8 # v 2.4.2
+        with:
+          version: ${{ inputs.jreleaser-version }}
+          arguments: |
+            release --auto-config --update --skip-tag --branch ${{ inputs.branch }} --tag-name ${{ env.JRELEASER_TAG_NAME }} \
+            --update-section=ASSETS --skip-checksums --file slsa/${{ needs.slsa-run.outputs.attestations-download-name }}/*-attestation.intoto.build.slsa
+        env:
+          JRELEASER_PROJECT_VERSION: ${{ inputs.project-version }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.github-token }}

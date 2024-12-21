@@ -153,3 +153,68 @@ Additional environment variables may be needed depending on your specific setup,
 with GPG or announcing a release via Twitter. Review the docs at link:https://jreleaser.org[] to find more about these
 variables and how to set them up.
 
+=== SLSA Builder
+
+A custom link:https://github.com/slsa-framework/[SLSA builder] is available for Zig projects. The following snippet shows
+the minimum configuration to run the builder on GitHub Actions.
+
+[source,yaml]
+----
+  release:
+    permissions:
+      contents: write
+      id-token: write
+      actions: read
+      packages: write
+    uses: jreleaser/release-action/.github/workflows/builder_slsa3.yml@v1.0.0-zig
+    with:
+      project-version: ${{ inputs.version }}
+      rekor-log-public: true
+    secrets:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+----
+
+It's expected that the JReleaser configuration defines build instructions using the `hooks` feature, such as
+
+[source,yaml]
+.jreleaser.yml
+----
+matrix:
+  rows:
+    - { os: macos,   arch: aarch64, ext: '',     platform: osx-aarch_64     }
+    - { os: macos,   arch: x86_64,  ext: '',     platform: osx-x86_64       }
+    - { os: linux,   arch: aarch64, ext: '',     platform: linux-aarch_64   }
+    - { os: linux,   arch: x86_64,  ext: '',     platform: linux-x86_64     }
+    - { os: windows, arch: aarch64, ext: '.exe', platform: windows-aarch_64 }
+    - { os: windows, arch: x86_64,  ext: '.exe', platform: windows-x86_64   }
+
+hooks:
+  script:
+    before:
+      - run: |
+          mkdir -p target/{{ matrix.arch }}-{{ matrix.os }}
+          zig build-exe src/main.zig -target {{ matrix.arch }}-{{ matrix.os }} \
+          -O ReleaseSmall -femit-bin=target/{{ matrix.arch }}-{{ matrix.os }}/helloworld{{ matrix.ext }}
+        applyDefaultMatrix: true
+        filter:
+          includes: ['assemble']
+
+assemble:
+  archive:
+    helloworld:
+      active: ALWAYS
+      formats: [ ZIP ]
+      applyDefaultMatrix: true
+      archiveName: '{{distributionName}}-{{projectVersion}}-{{ matrix.arch }}-{{ matrix.os }}'
+      fileSets:
+        - input: 'target/{{ matrix.arch }}-{{ matrix.os }}'
+          output: 'bin'
+          includes: [ 'helloworld{.exe,}' ]
+        - input: '.'
+          includes: [ 'LICENSE' ]
+
+distributions:
+  helloworld:
+    executable:
+      windowsExtension: exe
+----
