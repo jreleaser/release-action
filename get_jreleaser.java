@@ -2,7 +2,7 @@
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -49,7 +49,7 @@ class get_jreleaser {
         if ("latest".equalsIgnoreCase(version)) {
             var url = "https://jreleaser.org/releases/latest/download/VERSION";
 
-            try (var stream = new URL(url).openStream()) {
+            try (var stream = new URI(url).toURL().openStream()) {
                 System.out.printf("✅ Located version marker%n");
                 Files.copy(stream, versionFile, REPLACE_EXISTING);
                 version = new String(Files.readAllBytes(versionFile)).trim();
@@ -84,7 +84,7 @@ class get_jreleaser {
         var tag = !"early-access".equals(version) ? "v" + version : version;
         var url = "https://github.com/jreleaser/jreleaser/releases/download/" + tag + "/jreleaser-tool-provider-" + version + ".jar";
 
-        try (var stream = new URL(url).openStream()) {
+        try (var stream = new URI(url).toURL().openStream()) {
             System.out.printf("✅ Located JReleaser %s%n", version);
             System.out.printf("⬇️  Downloading %s%n", url);
             var size = Files.copy(stream, jreleaserJar, REPLACE_EXISTING);
