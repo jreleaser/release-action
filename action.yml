@@ -1,7 +1,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-# Copyright 2020-2023 The JReleaser authors.
+# Copyright 2020-2026 The JReleaser authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ runs:
       uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v 5.0.0
       if: ${{ inputs.setup-java == 'true' }}
       with:
-        java-version: 17
+        java-version: 21
         distribution: 'zulu'
 
     - name: 'Download JReleaser'
